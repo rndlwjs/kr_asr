@@ -13,11 +13,20 @@ class feed_forward_module_1(nn.Module):
     def forward(self,x):
         return x
 
+class scale_dot_attention(nn.Module):
+    def __init__(self, C):
+        super(scale_dot_attention, self).__init__()
+        self.q            = nn.Linear()
+        self.k            = nn.Linear()
+        self.v            = nn.Linear()
+    def forward(self, x):
+        return x
+
 #Relative Position Representations in Transformer
 class multi_head_self_attention(nn.Module):
     def __init__(self, C):
         super(multi_head_self_attention, self).__init__()
-    
+        self.scale_dot_attention = scale_dot_attention()
     def forward(self,x):
         return x
 
