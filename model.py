@@ -7,10 +7,24 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class feed_forward_module_1(nn.Module):
-    def __init__(self, C):
+    def __init__(self, DIM):
         super(feed_forward_module_1, self).__init__()
-    
+        self.layernorm      = nn.LayerNorm(DIM)
+        self.linear1        = nn.Linear(DIM, DIM*4)     #expansion factor 4
+        self.swish          = nn.SiLU(DIM)
+        self.dropout        = nn.Dropout(p=0.1)         #probability is 0.1
+        self.linear2        = nn.Linear(DIM*4, DIM)     #project back
+
     def forward(self,x):
+        residual    = x
+        x           = self.layernorm(x)
+        x           = self.linear1(x)
+        x           = self.swish(x)
+        x           = self.dropout(x)
+        x           = self.linear2(x)
+        x           = self.dropout(x)
+        x           += residual
+
         return x
 
 class scale_dot_attention(nn.Module):
@@ -31,10 +45,27 @@ class multi_head_self_attention(nn.Module):
         return x
 
 class convolutional_module(nn.Module):
-    def __init__(self, C):
+    def __init__(self, DIM):
         super(convolutional_module, self).__init__()
-    
+        self.layernorm      = nn.LayerNorm(DIM)
+        self.pointwise1     = nn.Conv1d(DIM, DIM*2, kernel_size=1)     #expansion factor of 2 projecting the number of channel with GLU layer
+        self.glu            = nn.GLU(dim=1)
+        self.depthwise      = nn.Conv1d(DIM, DIM, kernel_size=31, padding='same', groups=DIM)   #kernel_size should be odd number
+        self.bn             = nn.BatchNorm1d(DIM)
+        self.swish          = nn.SiLU(DIM)
+        self.pointwise2     = nn.Conv1d(DIM, DIM, kernel_size=1)
+        self.dropout        = nn.Dropout(p=0.1)
+
     def forward(self,x):
+        residual        = x
+        x               = self.pointwise1(x)
+        x               = self.glu(x)
+        x               = self.depthwise(x)
+        x               = self.bn(x)
+        x               = self.swish(x)
+        x               = self.pointwise2(x)
+        x               = self.dropout(x)
+        x               += residual
         return x
 
 class feed_forward_module_2(nn.Module):
