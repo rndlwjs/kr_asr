@@ -19,14 +19,16 @@ Multi-head Attention = Scaled Dot-Product Attention 여러개 있는 것!
 
 Scaled Dot-Product Attention 구현 필요 (Q,K,V)
 
-Transformer (encoder+decoder) vs Multi-head attention
+Transformer (encoder+decoder) vs Multi-head attention -> Only the Multi-head attention
+
+Why Attention head is separated by view() function?
 -->
 - Convolution Module(1)<br/>
 - Feed Forward Module(1)<br/>
 
 Due date: <br/>
-(1) 24/02/07 - 24/02/14
-(2) 24/02/14 - 24/02/21
+(1) 24/02/07 - 24/02/14 (Done) <br/>
+(2) 24/02/14 - 24/02/21 <br/>
 
 ## 2. 데이터셋 처리<br/>
 Kspoonspeech
@@ -40,3 +42,11 @@ librispeech과 유사한 1000시간 데이터 찾기
 LSTM decoder
 CTC loss / Transducer
 -->
+
+## Questions <br/>
+Q1: What is the difference of pointwise and depthwise convolution? <br/>
+
+Q2: What is the difference of nn.Conv1d and nn.Linear? <br/>
+
+Q3: Whether linear1() and linear2() are redundant? <br/>
+Even though two layers shares the same number of dimension or kernel size, they should be declared respectively when they are different layers. <br/>
