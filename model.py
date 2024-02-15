@@ -35,7 +35,7 @@ class scale_dot_attention(nn.Module):
         self.q              = nn.Linear(DIM, DIM)
         self.k              = nn.Linear(DIM, DIM)
         self.v              = nn.Linear(DIM, DIM)
-        self.softmax        = nn.Softmax()
+        self.softmax        = nn.Softmax(dim=1) #Q4 How to choose the dimension for softmax?
         self.dim            = DIM
 
     def forward(self, x):
@@ -43,8 +43,8 @@ class scale_dot_attention(nn.Module):
         K           = self.k(x)
         V           = self.v(x)
         scale       = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.dim)
-        score       = torch.matmul(self.softmax(scale), V)
-        return score
+        output      = torch.matmul(self.softmax(scale), V)
+        return output
 
 #Relative Position Representations in Transformer
 class multi_head_self_attention(nn.Module):
@@ -52,9 +52,11 @@ class multi_head_self_attention(nn.Module):
         super(multi_head_self_attention, self).__init__()
         self.layernorm              = nn.LayerNorm1d(DIM)
         self.scale_dot_attention    = scale_dot_attention(DIM)
-        #self.multi  = [for i in num_head: self.scale_dot_attention]
+        self.multi  = [for i in num_head: self.scale_dot_attention]
         self.multi_head             = []
-        for i in range(num_Head): self.multi_head.append(copy.deepcopy(self.scale_dot_attention))
+        #for i in range(num_Head): self.multi_head.append(copy.deepcopy(self.scale_dot_attention))
+        #self.multi  = nn.ModuleList(self.multi_head)
+
         self.num_head               = num_Head
         self.linear                 = nn.Linear(DIM, DIM)
         self.dropout                = nn.Dropout(p=0.1)
@@ -62,8 +64,10 @@ class multi_head_self_attention(nn.Module):
     def forward(self,x):
         x   = self.layernorm(x)
         #Multi-head Attention
-        for att in self.
-
+        atts = []
+        for att in range(self.num_head):
+            atts.append(self.multi[att](x))
+        
 #        x   = torch.cat([i for i in self.num_head: self.scale_dot_attention(x)], dim=1) #cat dim=1?
 
         x   = self.linear(x)

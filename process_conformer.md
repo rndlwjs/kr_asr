@@ -50,3 +50,5 @@ Q2: What is the difference of nn.Conv1d and nn.Linear? <br/>
 
 Q3: Whether linear1() and linear2() are redundant? <br/>
 Even though two layers shares the same number of dimension or kernel size, they should be declared respectively when they are different layers. <br/>
+
+Q4: How to choose the dimension for softmax? <br/>
