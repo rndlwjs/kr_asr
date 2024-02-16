@@ -48,12 +48,11 @@ class scale_dot_attention(nn.Module):
 
 #Relative Position Representations in Transformer
 class multi_head_self_attention(nn.Module):
-    def __init__(self, DIM, num_Head=4):
+    def __init__(self, DIM, num_Head=1):
         super(multi_head_self_attention, self).__init__()
-        self.layernorm              = nn.LayerNorm1d(DIM)
+        self.layernorm              = nn.LayerNorm(DIM)
         self.scale_dot_attention    = scale_dot_attention(DIM)
-        self.multi  = [for i in num_head: self.scale_dot_attention]
-        self.multi_head             = []
+        self.multi  = [self.scale_dot_attention for i in range(num_Head)]
         #for i in range(num_Head): self.multi_head.append(copy.deepcopy(self.scale_dot_attention))
         #self.multi  = nn.ModuleList(self.multi_head)
 
@@ -64,14 +63,15 @@ class multi_head_self_attention(nn.Module):
     def forward(self,x):
         x   = self.layernorm(x)
         #Multi-head Attention
-        atts = []
+        result = []
         for att in range(self.num_head):
-            atts.append(self.multi[att](x))
-        
-#        x   = torch.cat([i for i in self.num_head: self.scale_dot_attention(x)], dim=1) #cat dim=1?
+            result.append(self.multi[att](x))
+        if len(self.multi) == 1:
+            attention_output = result[0]
+        else:
+            attention_output = torch.cat(result, dim=1) #cat dim=1?
 
-        x   = self.linear(x)
-        x   = self.dropout(x)
+        x   = self.dropout(self.linear(attention_output))
         return x
 
 class convolutional_module(nn.Module):

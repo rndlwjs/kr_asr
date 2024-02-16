@@ -52,3 +52,7 @@ Q3: Whether linear1() and linear2() are redundant? <br/>
 Even though two layers shares the same number of dimension or kernel size, they should be declared respectively when they are different layers. <br/>
 
 Q4: How to choose the dimension for softmax? <br/>
+
+Q5: What is the reason for using Q, K, V <br/>
+
+Q6: How to divide the Attention heads in multi-head attention? 3 vs 4 dimensional tensor / transferring separate layers vs using the modulelist <br/>
