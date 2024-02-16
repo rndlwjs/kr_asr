@@ -53,6 +53,7 @@ Even though two layers shares the same number of dimension or kernel size, they 
 
 Q4: How to choose the dimension for softmax? <br/>
 
-Q5: What is the reason for using Q, K, V <br/>
+Q5: What is the reason for using Q, K, V? <br/>
+<img width="361" alt="multi_head_self_attention" src="https://github.com/rndlwjs/kr_asr/assets/70250234/1b1e2a0f-db12-482e-bf59-c4d0b1794acc"> <br/>
 
 Q6: How to divide the Attention heads in multi-head attention? 3 vs 4 dimensional tensor / transferring separate layers vs using the modulelist <br/>
